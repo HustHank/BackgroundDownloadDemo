@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="oGr-UO-eQg">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="oGr-UO-eQg">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -17,22 +17,34 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZFY-VG-pit">
-                                <rect key="frame" x="150" y="262" width="88" height="30"/>
-                                <state key="normal" title="dwonlaod"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZFY-VG-pit">
+                                <rect key="frame" x="138" y="231" width="100" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="ORy-8E-4WR"/>
+                                    <constraint firstAttribute="height" constant="50" id="xxg-wx-DiF"/>
+                                </constraints>
+                                <state key="normal" title="download"/>
                                 <connections>
                                     <action selector="download:" destination="oGr-UO-eQg" eventType="touchUpInside" id="YjZ-Eo-1iG"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PjF-Or-fJX">
-                                <rect key="frame" x="150" y="320" width="88" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PjF-Or-fJX">
+                                <rect key="frame" x="138" y="309" width="100" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="L6u-K0-uoY"/>
+                                    <constraint firstAttribute="width" constant="100" id="SOE-LM-eNt"/>
+                                </constraints>
                                 <state key="normal" title="pause"/>
                                 <connections>
                                     <action selector="pauseDownlaod:" destination="oGr-UO-eQg" eventType="touchUpInside" id="kae-6H-wVv"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wlK-Gi-WW4">
-                                <rect key="frame" x="150" y="376" width="88" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wlK-Gi-WW4">
+                                <rect key="frame" x="138" y="385" width="100" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="Smr-D5-yrk"/>
+                                    <constraint firstAttribute="height" constant="50" id="TlD-Ve-Kt4"/>
+                                </constraints>
                                 <state key="normal" title="continue"/>
                                 <connections>
                                     <action selector="continueDownlaod:" destination="oGr-UO-eQg" eventType="touchUpInside" id="9eM-H1-sqo"/>
@@ -40,6 +52,14 @@
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="PjF-Or-fJX" firstAttribute="centerX" secondItem="EWJ-9P-CnB" secondAttribute="centerX" id="7xc-eJ-1nB"/>
+                            <constraint firstItem="wlK-Gi-WW4" firstAttribute="centerX" secondItem="EWJ-9P-CnB" secondAttribute="centerX" id="Hjm-3W-XaC"/>
+                            <constraint firstItem="PjF-Or-fJX" firstAttribute="centerY" secondItem="EWJ-9P-CnB" secondAttribute="centerY" id="URt-p0-1iP"/>
+                            <constraint firstItem="ZFY-VG-pit" firstAttribute="centerX" secondItem="EWJ-9P-CnB" secondAttribute="centerX" id="Wn3-ge-nbl"/>
+                            <constraint firstItem="PjF-Or-fJX" firstAttribute="top" secondItem="ZFY-VG-pit" secondAttribute="bottom" constant="28" id="mC3-1Q-5A4"/>
+                            <constraint firstItem="wlK-Gi-WW4" firstAttribute="top" secondItem="PjF-Or-fJX" secondAttribute="bottom" constant="26" id="v4Z-j6-hPH"/>
+                        </constraints>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                 </viewController>

@@ -17,6 +17,8 @@ typedef void(^CompletionHandlerType)();
 @property (strong, nonatomic) NSURLSession *backgroundSession;
 @property (strong, nonatomic) NSData *resumeData;
 
+@property (strong, nonatomic) UILocalNotification *localNotification;
+
 @end
 
 @implementation AppDelegate
@@ -24,6 +26,25 @@ typedef void(^CompletionHandlerType)();
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     self.backgroundSession = [self backgroundURLSession];
+    
+    [self initLocalNotification];
+    // ios8后，需要添加这个注册，才能得到授权
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        UIUserNotificationType type =  UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:type
+                                                                                 categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+        // 通知重复提示的单位，可以是天、周、月
+        self.localNotification.repeatInterval = 0;
+    } else {
+        // 通知重复提示的单位，可以是天、周、月
+        self.localNotification.repeatInterval = 0;
+    }
+    
+    UILocalNotification *localNotification = [launchOptions valueForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    if (localNotification) {
+        [self application:application didReceiveLocalNotification:localNotification];
+    }
     return YES;
 }
 
@@ -58,6 +79,41 @@ typedef void(^CompletionHandlerType)();
         handler();
     }
 }
+
+#pragma mark - Local Notification
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"下载通知"
+                                                    message:notification.alertBody
+                                                   delegate:nil
+                                          cancelButtonTitle:@"确定"
+                                          otherButtonTitles:nil];
+    [alert show];
+    
+    // 图标上的数字减1
+    application.applicationIconBadgeNumber -= 1;
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application {
+    // 图标上的数字减1
+    application.applicationIconBadgeNumber -= 1;
+}
+
+- (void)initLocalNotification {
+    self.localNotification = [[UILocalNotification alloc] init];
+    self.localNotification.fireDate = [[NSDate date] dateByAddingTimeInterval:5];
+    self.localNotification.alertAction = nil;
+    self.localNotification.soundName = UILocalNotificationDefaultSoundName;
+    self.localNotification.alertBody = @"下载完成了！";
+    self.localNotification.applicationIconBadgeNumber = 1;
+    self.localNotification.repeatInterval = 0;
+}
+
+- (void)sendLocalNotification {
+    [[UIApplication sharedApplication] scheduleLocalNotification:self.localNotification];
+}
+
 
 #pragma mark - backgroundURLSession
 - (NSURLSession *)backgroundURLSession {
@@ -149,6 +205,8 @@ didCompleteWithError:(NSError *)error {
             self.downloadTask  = [self.backgroundSession downloadTaskWithResumeData:resumeData];
             [self.downloadTask  resume];
         }
+    } else {
+        [self sendLocalNotification];
     }
 }
 
