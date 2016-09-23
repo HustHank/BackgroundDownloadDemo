@@ -1,5 +1,10 @@
 # BackgroundDownloadDemo
 一个简单的使用NSURLSession的下载Demo，包括后台下载和断点下载
+
+##运行环境
+ * Xcode7.3.1
+ * iOS9.3.5
+
 ##原理如下
 
 >从iOS7以来，苹果推出NSURLSession后，iOS现在可以实现真正的后台下载，这对我们iOSer来说是一个福音。
