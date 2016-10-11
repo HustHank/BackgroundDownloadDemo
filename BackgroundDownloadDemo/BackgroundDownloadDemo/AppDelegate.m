@@ -152,7 +152,7 @@ typedef void(^CompletionHandlerType)();
 }
 
 - (void)continueDownload {
-    self.downloadTask  = [self.backgroundSession downloadTaskWithResumeData:self.resumeData];
+    self.downloadTask = [self.backgroundSession downloadTaskWithResumeData:self.resumeData];
     [self.downloadTask resume];
 }
 
@@ -189,11 +189,7 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
     
     NSLog(@"downloadTask:%lu percent:%.2f%%",(unsigned long)downloadTask.taskIdentifier,(CGFloat)totalBytesWritten / totalBytesExpectedToWrite * 100);
     NSString *strProgress = [NSString stringWithFormat:@"%.2f",(CGFloat)totalBytesWritten / totalBytesExpectedToWrite];
-    NSDictionary *userInfo = @{@"progress":strProgress};
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:kDownloadProgressNotification object:nil userInfo:userInfo];
-    });
+    [self postDownlaodProgressNotification:strProgress];
 }
 
 - (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
@@ -223,7 +219,14 @@ didCompleteWithError:(NSError *)error {
         }
     } else {
         [self sendLocalNotification];
+        [self postDownlaodProgressNotification:@"1"];
     }
 }
 
+- (void)postDownlaodProgressNotification:(NSString *)strProgress {
+    NSDictionary *userInfo = @{@"progress":strProgress};
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:kDownloadProgressNotification object:nil userInfo:userInfo];
+    });
+}
 @end
