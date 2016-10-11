@@ -134,15 +134,25 @@ typedef void(^CompletionHandlerType)();
 - (void)beginDownloadWithUrl:(NSString *)downloadURLString {
     NSURL *downloadURL = [NSURL URLWithString:downloadURLString];
     NSURLRequest *request = [NSURLRequest requestWithURL:downloadURL];
+    //cancel last download task
+    [self.downloadTask cancelByProducingResumeData:^(NSData * resumeData) {
+
+    }];
+    
     self.downloadTask = [self.backgroundSession downloadTaskWithRequest:request];
     [self.downloadTask resume];
 }
 
 - (void)pauseDownload {
-    [self.downloadTask suspend];
+    __weak __typeof(self) wSelf = self;
+    [self.downloadTask cancelByProducingResumeData:^(NSData * resumeData) {
+        __strong __typeof(wSelf) sSelf = wSelf;
+        sSelf.resumeData = resumeData;
+    }];
 }
 
 - (void)continueDownload {
+    self.downloadTask  = [self.backgroundSession downloadTaskWithResumeData:self.resumeData];
     [self.downloadTask resume];
 }
 
@@ -173,10 +183,17 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 
 - (void)URLSession:(NSURLSession *)session
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
-      didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten
+      didWriteData:(int64_t)bytesWritten
+ totalBytesWritten:(int64_t)totalBytesWritten
 totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
     
     NSLog(@"downloadTask:%lu percent:%.2f%%",(unsigned long)downloadTask.taskIdentifier,(CGFloat)totalBytesWritten / totalBytesExpectedToWrite * 100);
+    NSString *strProgress = [NSString stringWithFormat:@"%.2f",(CGFloat)totalBytesWritten / totalBytesExpectedToWrite];
+    NSDictionary *userInfo = @{@"progress":strProgress};
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:kDownloadProgressNotification object:nil userInfo:userInfo];
+    });
 }
 
 - (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
@@ -202,8 +219,7 @@ didCompleteWithError:(NSError *)error {
         if ([error.userInfo objectForKey:NSURLSessionDownloadTaskResumeData]) {
             NSData *resumeData = [error.userInfo objectForKey:NSURLSessionDownloadTaskResumeData];
             //通过之前保存的resumeData，获取断点的NSURLSessionTask，调用resume恢复下载
-            self.downloadTask  = [self.backgroundSession downloadTaskWithResumeData:resumeData];
-            [self.downloadTask  resume];
+            self.resumeData = resumeData;
         }
     } else {
         [self sendLocalNotification];

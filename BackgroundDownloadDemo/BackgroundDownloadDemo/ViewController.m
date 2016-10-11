@@ -11,6 +11,9 @@
 
 @interface ViewController ()
 
+@property (strong, nonatomic) IBOutlet UIProgressView *downloadProgress;
+@property (weak, nonatomic) IBOutlet UILabel *progressLabel;
+
 @end
 
 @implementation ViewController
@@ -18,11 +21,24 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateDownloadProgress:) name:kDownloadProgressNotification object:nil];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)updateDownloadProgress:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    CGFloat fProgress = [userInfo[@"progress"] floatValue];
+    self.progressLabel.text = [NSString stringWithFormat:@"%.2f%%",fProgress * 100];
+    self.downloadProgress.progress = fProgress;
 }
 
 #pragma mark Method
@@ -40,6 +56,5 @@
     AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
     [delegate continueDownload];
 }
-
 
 @end

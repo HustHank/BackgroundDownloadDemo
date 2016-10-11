@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+#define kDownloadProgressNotification @"downloadProgressNotification"
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
