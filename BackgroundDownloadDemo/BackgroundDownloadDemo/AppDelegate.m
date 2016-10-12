@@ -7,6 +7,9 @@
 //
 
 #import "AppDelegate.h"
+#import "NSURLSession+CorrectedResumeData.h"
+
+#define IS_IOS10ORLATER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10)
 
 typedef void(^CompletionHandlerType)();
 
@@ -152,8 +155,23 @@ typedef void(^CompletionHandlerType)();
 }
 
 - (void)continueDownload {
-    self.downloadTask = [self.backgroundSession downloadTaskWithResumeData:self.resumeData];
-    [self.downloadTask resume];
+    if (self.resumeData) {
+        if (IS_IOS10ORLATER) {
+            self.downloadTask = [self.backgroundSession downloadTaskWithCorrectResumeData:self.resumeData];
+        } else {
+            self.downloadTask = [self.backgroundSession downloadTaskWithResumeData:self.resumeData];
+        }
+        [self.downloadTask resume];
+        self.resumeData = nil;
+    }
+}
+
+- (BOOL)isValideResumeData:(NSData *)resumeData
+{
+    if (!resumeData || resumeData.length == 0) {
+        return NO;
+    }
+    return YES;
 }
 
 #pragma mark - NSURLSessionDownloadDelegate
