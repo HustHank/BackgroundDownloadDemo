@@ -28,6 +28,7 @@ typedef void(^CompletionHandlerType)();
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    self.completionHandlerDictionary = @{}.mutableCopy;
     self.backgroundSession = [self backgroundURLSession];
     
     [self initLocalNotification];
@@ -73,7 +74,7 @@ typedef void(^CompletionHandlerType)();
 }
 
 - (void)callCompletionHandlerForSession:(NSString *)identifier {
-    CompletionHandlerType handler = [self.completionHandlerDictionary objectForKey: identifier];
+    CompletionHandlerType handler = [self.completionHandlerDictionary objectForKey:identifier];
     
     if (handler) {
         [self.completionHandlerDictionary removeObjectForKey: identifier];
