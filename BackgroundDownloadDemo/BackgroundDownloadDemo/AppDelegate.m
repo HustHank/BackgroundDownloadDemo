@@ -125,7 +125,12 @@ typedef void(^CompletionHandlerType)();
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSString *identifier = @"com.yourcompany.appId.BackgroundSession";
-        NSURLSessionConfiguration* sessionConfig = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:identifier];
+        NSURLSessionConfiguration* sessionConfig = nil;
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 80000)
+        sessionConfig = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:identifier];
+#else
+        sessionConfig = [NSURLSessionConfiguration backgroundSessionConfiguration:identifier];
+#endif
         session = [NSURLSession sessionWithConfiguration:sessionConfig
                                                 delegate:self
                                            delegateQueue:[NSOperationQueue mainQueue]];
